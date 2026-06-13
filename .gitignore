@@ -1,0 +1,18 @@
+# ============================================================
+#  NEVER commit secrets. In crypto this rule is everything.
+#  A leaked private key or seed phrase = your funds are gone.
+# ============================================================
+*.key
+*.pem
+*-keypair.json
+id.json
+wallet.json
+secret*
+seed*
+.env
+.env.*
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
