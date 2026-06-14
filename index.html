@@ -62,6 +62,15 @@
       box-shadow: 0 20px 60px rgba(0,0,0,.6);
     }
     .loading { color: var(--pork-pink); text-align: center; padding: 40px 0; }
+
+    .tg-button {
+      margin-top: 18px; display: inline-flex; align-items: center; gap: 8px;
+      background: #229ED9; color: #fff; text-decoration: none; font-weight: 700;
+      padding: 12px 22px; border-radius: 999px; font-size: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.45); transition: transform .1s ease;
+    }
+    .tg-button:hover { transform: translateY(-2px); }
+
     .footnote { margin-top: 22px; color: #c9a9b3; font-size: .8rem; text-align: center;
                 text-shadow: 0 1px 6px rgba(0,0,0,.7); }
   </style>
@@ -83,6 +92,10 @@
   <div id="pork-pay-widget">
     <div class="loading">Loading swap… 🐷</div>
   </div>
+
+  <a class="tg-button" href="https://t.me/PorkPayBot" target="_blank" rel="noopener">
+    🤖 Trade on Telegram
+  </a>
 
   <p class="footnote">Pork Pay · powered by Jupiter liquidity on Solana</p>
 
