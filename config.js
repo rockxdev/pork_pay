@@ -4,7 +4,7 @@
 
 const PORK_PAY_CONFIG = {
   // Your Jupiter referral account (collects your fees). Verified on-chain.
-  referralAccount: "3UGYxh2krAfgyMAYNQ2PsUwdHHGpG3aDSXbdDfkdRyhP",
+  referralAccount: "3uvG6RFTyYYyFELvHoMNdQGHs3uYHtb7TXnCHSy8GG4s",
 
   // Your fee in basis points. 50 = 0.5%, 100 = 1%.
   referralFeeBps: 50,
