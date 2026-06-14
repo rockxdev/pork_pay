@@ -5,57 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pork Pay 🐷 — Swap Anything</title>
 
-  <!-- Jupiter Plugin: the swap engine (wallet connect + swapping). RPC-less. -->
-  <!-- NOTE: loaded WITHOUT defer so window.Jupiter exists before we init it. -->
+  <!-- Jupiter Plugin: the swap engine. Loaded WITHOUT defer so it's ready first. -->
   <script src="https://plugin.jup.ag/plugin-v1.js"></script>
 
   <style>
     :root {
-      --pork-pink: #f7a8b8;
+      --pork-pink: #ff6b9d;
       --pork-dark: #2a1a1f;
-      --pork-accent: #ff6b9d;
+
+      /* ===== Jupiter plugin theme (RGB, no rgb() wrapper) — pork palette ===== */
+      --jupiter-plugin-primary: 255, 107, 157;      /* accent pink */
+      --jupiter-plugin-background: 42, 26, 31;        /* deep pork */
+      --jupiter-plugin-primaryText: 247, 232, 235;    /* near-white */
+      --jupiter-plugin-warning: 251, 191, 36;
+      --jupiter-plugin-interactive: 74, 47, 58;       /* inputs/buttons bg */
+      --jupiter-plugin-module: 58, 38, 48;            /* card panels */
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at top, #3a2630, var(--pork-dark));
       color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       padding: 40px 16px;
     }
-    .brand { text-align: center; margin-bottom: 28px; }
+
+    /* ===== Split background: John Pork | Daquavious Pork ===== */
+    .bg {
+      position: fixed; inset: 0; z-index: -2; display: flex;
+      background: var(--pork-dark); /* fallback before images load */
+    }
+    .bg-half {
+      flex: 1; background-size: cover; background-position: center;
+      background-color: #1a0f13; /* shows if image missing */
+    }
+    .bg-john { background-image: url("./assets/john-pork.jpg"); }
+    .bg-daq  { background-image: url("./assets/daquavious-pork.jpg"); }
+    /* dark pork-tinted overlay so the widget stays readable over the photos */
+    .bg-overlay {
+      position: fixed; inset: 0; z-index: -1;
+      background: linear-gradient(180deg, rgba(42,26,31,.62) 0%, rgba(42,26,31,.88) 100%);
+    }
+
+    .brand { text-align: center; margin-bottom: 24px; text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+    .brand .pig { font-size: 3rem; display: block; margin-bottom: 6px; }
     .brand h1 { font-size: 2.6rem; letter-spacing: -1px; }
-    .brand .pig { font-size: 3rem; display: block; margin-bottom: 8px; }
     .brand p { color: var(--pork-pink); margin-top: 6px; font-size: 1rem; }
 
-    /* Jupiter injects the swap UI into this div. min-height reserves space. */
     #pork-pay-widget {
-      width: 100%;
-      max-width: 420px;
-      min-height: 568px;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      width: 100%; max-width: 420px; min-height: 568px;
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
     }
-
-    .loading {
-      color: var(--pork-pink);
-      text-align: center;
-      padding: 40px 0;
-    }
-    .footnote {
-      margin-top: 24px;
-      color: #8a7a80;
-      font-size: 0.8rem;
-      text-align: center;
-      max-width: 420px;
-    }
+    .loading { color: var(--pork-pink); text-align: center; padding: 40px 0; }
+    .footnote { margin-top: 22px; color: #c9a9b3; font-size: .8rem; text-align: center;
+                text-shadow: 0 1px 6px rgba(0,0,0,.7); }
   </style>
 </head>
 <body>
+  <!-- backgrounds -->
+  <div class="bg">
+    <div class="bg-half bg-john"></div>
+    <div class="bg-half bg-daq"></div>
+  </div>
+  <div class="bg-overlay"></div>
+
   <div class="brand">
     <span class="pig">🐷</span>
     <h1>Pork Pay</h1>
@@ -66,26 +84,22 @@
     <div class="loading">Loading swap… 🐷</div>
   </div>
 
-  <p class="footnote">Powered by Jupiter liquidity on Solana.</p>
+  <p class="footnote">Pork Pay · powered by Jupiter liquidity on Solana</p>
 
-  <!-- Load your settings first... -->
   <script src="./config.js"></script>
-
-  <!-- ...then start the plugin, but only once it has actually loaded. -->
   <script>
     function startPorkPay() {
-      // If Jupiter hasn't loaded yet, wait and try again (load guard).
       if (!window.Jupiter || typeof window.Jupiter.init !== "function") {
-        return setTimeout(startPorkPay, 100);
+        return setTimeout(startPorkPay, 100); // load guard
       }
       window.Jupiter.init({
         displayMode: "integrated",
         integratedTargetId: "pork-pay-widget",
+        containerStyles: { borderRadius: "20px" },
+        branding: { name: "Pork Pay" },
         formProps: {
-          // ===== how you earn =====
           referralAccount: PORK_PAY_CONFIG.referralAccount,
           referralFee: PORK_PAY_CONFIG.referralFeeBps,
-          // ===== default to buying PORK =====
           initialInputMint: PORK_PAY_CONFIG.defaultInputMint,
           initialOutputMint: PORK_PAY_CONFIG.defaultOutputMint,
         },
