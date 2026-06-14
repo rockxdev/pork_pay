@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pork Pay 🐷 — Swap Anything</title>
 
-  <!-- Jupiter Plugin: the swap engine. This is loaded from Jupiter, maintained by them. -->
-  <script src="https://terminal.jup.ag/main.js" data-preload defer></script>
+  <!-- Jupiter Plugin: the swap engine (wallet connect + swapping). RPC-less. -->
+  <!-- NOTE: loaded WITHOUT defer so window.Jupiter exists before we init it. -->
+  <script src="https://plugin.jup.ag/plugin-v1.js"></script>
 
   <style>
     :root {
@@ -30,15 +31,21 @@
     .brand .pig { font-size: 3rem; display: block; margin-bottom: 8px; }
     .brand p { color: var(--pork-pink); margin-top: 6px; font-size: 1rem; }
 
-    /* This div is where Jupiter injects the swap UI */
+    /* Jupiter injects the swap UI into this div. min-height reserves space. */
     #pork-pay-widget {
       width: 100%;
       max-width: 420px;
+      min-height: 568px;
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(0,0,0,0.5);
     }
 
+    .loading {
+      color: var(--pork-pink);
+      text-align: center;
+      padding: 40px 0;
+    }
     .footnote {
       margin-top: 24px;
       color: #8a7a80;
@@ -46,39 +53,45 @@
       text-align: center;
       max-width: 420px;
     }
-    .footnote code { color: var(--pork-accent); }
   </style>
 </head>
 <body>
   <div class="brand">
     <span class="pig">🐷</span>
     <h1>Pork Pay</h1>
-    <p>Swap any token. Powered by your liquidity.</p>
+    <p>Connect your wallet. Swap any token. Buy $PORK.</p>
   </div>
 
-  <div id="pork-pay-widget"></div>
+  <div id="pork-pay-widget">
+    <div class="loading">Loading swap… 🐷</div>
+  </div>
 
-  <p class="footnote">
-    Every swap routed here pays a fee to your wallet.
-    Edit <code>config.js</code> to set your wallet &amp; fee.
-  </p>
+  <p class="footnote">Powered by Jupiter liquidity on Solana.</p>
 
+  <!-- Load your settings first... -->
   <script src="./config.js"></script>
-  <script>
-    window.Jupiter.init({
-      // Render the swap UI inline inside our branded div (not a popup)
-      displayMode: "integrated",
-      integratedTargetId: "pork-pay-widget",
 
-      formProps: {
-        // ===== THIS IS HOW YOU EARN =====
-        // Your Solana wallet / referral account that collects the fee.
-        referralAccount: PORK_PAY_CONFIG.referralAccount,
-        // Fee in basis points. 50 = 0.5%, 100 = 1%. Jupiter caps this.
-        referralFee: PORK_PAY_CONFIG.referralFeeBps,
-        // =================================
-      },
-    });
+  <!-- ...then start the plugin, but only once it has actually loaded. -->
+  <script>
+    function startPorkPay() {
+      // If Jupiter hasn't loaded yet, wait and try again (load guard).
+      if (!window.Jupiter || typeof window.Jupiter.init !== "function") {
+        return setTimeout(startPorkPay, 100);
+      }
+      window.Jupiter.init({
+        displayMode: "integrated",
+        integratedTargetId: "pork-pay-widget",
+        formProps: {
+          // ===== how you earn =====
+          referralAccount: PORK_PAY_CONFIG.referralAccount,
+          referralFee: PORK_PAY_CONFIG.referralFeeBps,
+          // ===== default to buying PORK =====
+          initialInputMint: PORK_PAY_CONFIG.defaultInputMint,
+          initialOutputMint: PORK_PAY_CONFIG.defaultOutputMint,
+        },
+      });
+    }
+    startPorkPay();
   </script>
 </body>
 </html>

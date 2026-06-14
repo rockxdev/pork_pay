@@ -1,15 +1,15 @@
 // ============================================================
-//  Pork Pay — your settings live here. Edit these two lines.
+//  Pork Pay — your settings live here.
 // ============================================================
 
 const PORK_PAY_CONFIG = {
-  // 1) PASTE YOUR REFERRAL ACCOUNT ADDRESS HERE.
-  //    This is NOT just any wallet — you create it (free) at:
-  //    https://referral.jup.ag/dashboard
-  //    It tells Jupiter where to send the fees you earn.
+  // Your Jupiter referral account (collects your fees). Verified on-chain.
   referralAccount: "3UGYxh2krAfgyMAYNQ2PsUwdHHGpG3aDSXbdDfkdRyhP",
 
-  // 2) YOUR FEE, in basis points. 50 = 0.5%. 100 = 1%.
-  //    Start small so people actually use it. 50 is reasonable.
+  // Your fee in basis points. 50 = 0.5%, 100 = 1%.
   referralFeeBps: 50,
+
+  // Default the swap box to: pay with SOL, receive PORK (nudge people to buy PORK).
+  defaultInputMint: "So11111111111111111111111111111111111111112", // SOL
+  defaultOutputMint: "73jj6SFe9FKn6qqpaGwbSd7TL1sHheh3HqDo9RwA7BHB", // PORK
 };
