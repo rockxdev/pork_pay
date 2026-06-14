@@ -31,6 +31,8 @@ TOKENS = {
     "SOL":  {"mint": "So11111111111111111111111111111111111111112", "decimals": 9},
     "USDC": {"mint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "decimals": 6},
     "BONK": {"mint": "DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263", "decimals": 5},
+    # Your pork coin (Pump.fun token). Tradeable via Jupiter -> Pump.fun AMM.
+    "PORK": {"mint": "73jj6SFe9FKn6qqpaGwbSd7TL1sHheh3HqDo9RwA7BHB", "decimals": 6},
 }
 
 
@@ -93,8 +95,7 @@ async def quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(
         f"🐷 *Pork Pay quote*\n\n"
-        f"{amount:g} {from_sym} ≈ *{out_amount:,.4f} {to_sym}*\n"
-        f"_(includes your {PLATFORM_FEE_BPS / 100:.2f}% fee)_\n\n"
+        f"{amount:g} {from_sym} ≈ *{out_amount:,.4f} {to_sym}*\n\n"
         f"Phase A: quote only — no swap executed.",
         parse_mode="Markdown",
     )
